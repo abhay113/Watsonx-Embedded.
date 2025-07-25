@@ -1,0 +1,128 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Document RAG Chat (Final Correct Auth)",
+        "version": "4.0.0",
+        "description": "Uses the correct ai_service_stream endpoint for RAG and the correct OAuth2 'x-apikey' flow to enable a single API Key field in the Watsonx Assistant UI."
+    },
+    "servers": [
+        {
+            "url": "https://us-south.ml.cloud.ibm.com"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "oauth2": {
+                "type": "oauth2",
+                "description": "A special OAuth 2.0 flow for IBM API Keys.",
+                "flows": {
+                    "x-apikey": {
+                        "tokenUrl": "https://iam.cloud.ibm.com/identity/token",
+                        "grantType": "urn:ibm:params:oauth:grant-type:apikey",
+                        "secretKeys": [
+                            "apikey"
+                        ],
+                        "paramKeys": [],
+                        "scopes": {}
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "oauth2": []
+        }
+    ],
+    "paths": {
+        "/ml/v4/deployments/{deployment_id}/ai_service": {
+            "post": {
+                "summary": "Ask a question to the RAG model",
+                "operationId": "askRAGQuestion",
+                "parameters": [
+                    {
+                        "name": "deployment_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The unique ID of the Watsonx.ai deployment."
+                    },
+                    {
+                        "name": "version",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The API version date, e.g., 2021-05-01."
+                    }
+                ],
+                "requestBody": {
+                    "description": "The user's question, formatted in a messages array.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "messages": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "role": {
+                                                    "type": "string",
+                                                    "example": "user"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "What are the reasons for API failure?"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "messages"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response from the RAG model.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "choices": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "message": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "content": {
+                                                                "type": "string",
+                                                                "description": "The actual text answer from the model."
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

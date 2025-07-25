@@ -1,0 +1,1135 @@
+swagger: '2.0'
+info:
+  title: Credit Card Partner Service
+  x-ibm-name: credit-card-partner-service
+  version: 1.0.0
+  description: |-
+    Streamlining the Credit Card journey for Partners, simplifying the Application, Activation, and Utilization processes, while maximizing customer satisfaction and engagement.
+    The Credit Card Journey encompasses a series of steps, from applications to activation that require careful implementation to ensure a seamless experience for customers.
+x-ibm-configuration:
+  cors:
+    enabled: true
+  type: rest
+  phase: realized
+  enforced: true
+  testable: true
+  servers:
+    - url: https://uatyblsandbox.yesbank.in/api/sandbox/CCPartnerProgram/v1
+      type:
+        - production
+        - development
+basePath: /api/sandbox/CCPartnerProgram/v1
+paths:
+  /Dedupe:
+    post:
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/Dedupe_ResponseBody'
+      parameters:
+        - name: RequestBody
+          required: true
+          schema:
+            $ref: '#/definitions/Dedupe_RequestBody'
+          in: body
+      description: |-
+        - This will the first API that partner has to mandatorily consume to initiate customer journey for Credit card onboarding with Yes Bank.
+        - This is a dedupe check API used to submit initial data details captured at partner end from customers and validate whether customer is already having any credit card of yes bank or whether his credit card request is in progress or rejected previously. 
+  /Consent:
+    post:
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/Consent_ResponseBody'
+      parameters:
+        - name: RequsetBody
+          required: true
+          schema:
+            $ref: '#/definitions/Consent_RequestBody'
+          in: body
+      description: |+
+        - This will the next API operation that partner can consume to continue customer journey for Credit card onboarding
+        - This is a consent capture API used to submit various consent details captured at partner front end from customers
+        - If journey status is received as Active in response, then partner can initiate next APIs in the journey
+        - If journey status is received as Failed in response, then partner has to terminate customer journey
+
+  /FetchCustomerData:
+    post:
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/FetchCustomerData_ResponseBody'
+      parameters:
+        - required: true
+          name: RequestBody
+          schema:
+            $ref: '#/definitions/FetchCustomerData_RequestBody'
+          in: body
+      description: |-
+        - This will the next API that partner can consume to continue customer journey for Credit card onboarding.
+        - This API will be used to fetch customer demographic details, address details and pre populate these data on partner front end to save data entry from customer.
+        - If journey status is received as Active in response, then partner can initiate next APIs in the journey
+        - If journey status is received as Failed in response, then partner has to terminate customer journey
+  /CAF1:
+    post:
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/CAF1_ResponseBody'
+      parameters:
+        - name: RequestBody
+          required: true
+          schema:
+            $ref: '#/definitions/CAF1_RequestBody'
+          in: body
+      description: |-
+        - This will the next API that partner can consume to continue customer journey for Credit card onboarding
+        - Partner will submit the CAF 1 details prepopulated/captured on his front end.
+        - If journey status is received as Active all backend checks are passed and the information is stored at the backend and proceed to the Next API 
+        - If Journey status is received as Failed all backend checks are failed and the partner will receive an appropriate error.
+  /CAF2:
+    post:
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/CAF2_ResponseBody'
+      parameters:
+        - name: RequestBody
+          required: true
+          schema:
+            $ref: '#/definitions/CAF2_RequestBody'
+          in: body
+      description: |-
+        - This will the next API that partner can consume to continue customer journey for Credit card onboarding.
+        - Partner will pass Personal and Employment details for CC onboarding.
+        - If journey status is received as Active all backend checks are passed and the information is stored at the backend and proceed to the Next API.
+        - If Journey status is received as Failed all backend checks are failed and the partner will receive an appropriate error.
+  /SubmitOffer:
+    post:
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/SubmitOffer_ResponseBody'
+      parameters:
+        - name: RequestBody
+          required: true
+          schema:
+            $ref: '#/definitions/SubmitOffer_RequestBody'
+          in: body
+      description: |
+        - This will the next API that partner can display the consent which customer need provide Credit card onboarding.
+        - This is a display consent API used to display various consent details captured at partner front end from customers.
+        - In response, partner would receive success or failure response basis backend checks.
+        - If journey status is received as Active in response, then partner can initiate next APIs in the journey.
+        - If journey status is received as Failed in response, then partner has to terminate customer journey.
+  /EKYC:
+    post:
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/EKYC_ResponseBody'
+      parameters:
+        - name: RequestBody
+          required: true
+          schema:
+            $ref: '#/definitions/EKYC_RequestBody'
+          in: body
+      description: |-
+        - This will the next API that partner can consume to continue customer journey for Credit card onboarding.
+        - This is a EKYC API used to Complete KYC from customers.
+        - In response, partner would receive success or failure response basis backend checks.
+        - If journey status is received as Active in response, then partner can initiate next APIs in the journey.
+        - If journey status is received as Failed in response, then partner has to terminate customer journey.
+  /VKYC:
+    post:
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/VKYC_ResponseBody'
+      parameters:
+        - name: RequestBody
+          required: true
+          schema:
+            $ref: '#/definitions/VKYC_RequestBody'
+          in: body
+      description: |-
+        - This will the next API that partner can consume to continue customer journey for Credit card onboarding.
+        - It is mandatory for customer to complete his EKYC successfully first and then only VKYC stage is allowed to be invoked by partner.
+        - This is a VKYC API used to initiate the VKYC process of customer with YBL Video KYC agent.
+        - In response, partner would receive success or failure response basis backend checks.
+        - If journey status is received as Active in response, then partner can initiate next APIs in the journey.
+        - If journey status is received as Failed in response, then partner has to terminate customer journey
+  /Status:
+    post:
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/Status_ResponseBody'
+      parameters:
+        - name: RequestBody
+          required: true
+          schema:
+            $ref: '#/definitions/Status_RequestBody'
+          in: body
+      description: |-
+        - This will the next API that partner can consume to fetch the status of customer journey for Credit card onboarding.
+        - This is a Status API used to capture the status.
+        - In response, partner would receive success or failure response basis backend checks.
+        - If journey status is received as Active in response, then partner can initiate next APIs in the journey.
+        - If journey status is received as Failed in response, then partner has to terminate customer journey.
+        - If journey status is received as completed in response, then partner has to communicate to customer that his credit card onboarding with Yes bank is completed and credit card will be sent to customer.
+securityDefinitions:
+  clientID:
+    type: apiKey
+    in: header
+    name: X-IBM-Client-Id
+    description: X-IBM-Client-Id header to pass the client id. This is used for Authentication and Authorization.
+  clientSecret:
+    type: apiKey
+    x-key-type: client_secret
+    name: X-IBM-Client-Secret
+    in: header
+    description: X-IBM-Client-Secret header to pass the client secret. This is used for Authentication and Authorization
+schemes:
+  - https
+security:
+  - clientID: []
+    clientSecret: []
+definitions:
+  Dedupe_RequestBody:
+    type: object
+    properties:
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey Ensure this value is unique for every new journey created for each customer
+      stageName:
+        type: string
+        description: Master Stage values to be passed
+      productCode:
+        type: string
+        description: Product name as per master list
+      mobileNo:
+        type: string
+        description: Customer Mobile Number
+      panNo:
+        type: string
+        description: 'Customer PAN Number '
+      pincode:
+        type: string
+        description: Customer residance address pincode
+      dob:
+        type: string
+        description: Customer Date of Birth
+      firstName:
+        type: string
+        description: 'Customer first name '
+      middleName:
+        type: string
+        description: 'Customer Middle name '
+      lastName:
+        type: string
+        description: Customer last name
+      occupationType:
+        type: string
+    example: '{"prn":"<Channel code>_20240228164220_00001","stageName":"dedupe","productCode":"cc","mobileNo":"8928720702","panNo":"ABDPZ2749P","pincode":"400072","dob":"1994-09-24","firstName":"KAMLESH","middleName":"UDAY","lastName":"ZORE","occupationType":"Salaried"}'
+    required:
+      - prn
+      - stageName
+      - mobileNo
+      - productCode
+      - panNo
+      - pincode
+      - firstName
+      - lastName
+      - occupationType
+      - dob
+  Dedupe_ResponseBody:
+    type: object
+    properties:
+      jtid:
+        type: string
+        description: 'Unique Journey tracker ID generated by YBL for given Partner reference number jtid Example: “Channel code _ybpp_20240228_1000302'
+      prn:
+        type: string
+        description: PRN received in request
+      mobileNo:
+        type: string
+        description: Customer Mobile Number
+      stageName:
+        type: string
+      dedupeStatus:
+        type: string
+        description: 1. Pass if backend API response is found as pass or no match found 2. Fail if backend API response is found as Fail 3. Skip if no Response is received from backend API
+      responseCode:
+        type: string
+        description: 1."0000" for success 2. Appropriate incremental error code for backend check failures or due to backend API call failure
+      responseMessage:
+        type: string
+        description: 1. Success for "0000" 2. Appropriate functional validation failure message or backend API error message
+      journeyStatus:
+        type: string
+        description: 1. Active if checks are passed 2. Failed if checks are failed
+    example: '{"jtid":"<Channel code>_ybpp_20240228_1000302","prn":"<Channel code>_20240228164220_00001","mobileNo":"8928720702","stageName":"dedupe","dedupeStatus":"pass","responseCode":"0000","responseMessage":"Success","journeyStatus":"Active"}'
+  Consent_RequestBody:
+    type: object
+    properties:
+      jtId:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey
+      productCode:
+        type: string
+        description: Product name as per master list
+      stageName:
+        type: string
+        description: Master Stage values to be passed
+      tnCFlag:
+        type: boolean
+        description: Consent to accept T&C of CreditCard terms and conditions If customer has selected this consent checkbox then only partner to make this call, In case value is passed as false, API will throw an error as this flag has to be mandatorily True
+      tAndCDeclarationText:
+        type: string
+        description: 'Declaration text captured for T&C consent '
+      bureauFlag:
+        type: boolean
+        description: Consent to fetch bureau of customer If customer has selected this consent checkbox then only partner to make this call, In case value is passed as false, API will throw an error as this flag has to be mandatorily True True and journey will be ended
+      bureauDeclarationText:
+        type: string
+        description: 'Declaration text captured for bureau consent '
+      pepFlag:
+        type: boolean
+        description: Consent whether customer is politically exposed or not If customer has selected this consent checkbox then only partner to make this call, In case value is passed as false, API will throw an error as this flag has to be mandatorily True and journey will be ended
+      pepDeclarationText:
+        type: string
+        description: Declaration text captured for politically exposed person consent
+      promocallFlag:
+        type: boolean
+        description: 'Consent whether customer can receive promocall '
+      promocallDeclarationText:
+        type: string
+        description: Declaration text captured for promocall consent
+      whatsappFlag:
+        type: boolean
+        description: Consent whether customer can receive whatsapp messages
+      whatsappDeclarationText:
+        type: string
+        description: Declaration text captured for whatsapp consent
+      callbackAPI:
+        type: string
+        description: 'Callback API URL to post backend API success or failure response '
+    example: '{"jtId":"<Channel code>_ybpp_20240228_1000302","prn":"<Channel code>_20240228164220_00001","productCode":"cc","stageName":"consent","tnCFlag":true,"tAndCDeclarationText":"I agree to the terms and conditions of the loan.","bureauFlag":true,"bureauDeclarationText":"I consent to fetch bureau information for verification purposes.","pepFlag":true,"pepDeclarationText":"I confirm that I am not politically exposed.","promocallFlag":true,"promocallDeclarationText":"I agree to receive promotional calls.","whatsappFlag":true,"whatsappDeclarationText":"I agree to receive WhatsApp messages.","callbackAPI":"https://api.partner.com/yesbank/callback"}'
+    required:
+      - jtId
+      - prn
+      - productCode
+      - stageName
+      - tAndCDeclarationText
+      - bureauFlag
+      - tnCFlag
+      - bureauDeclarationText
+      - pepFlag
+      - pepDeclarationText
+      - promocallFlag
+      - promocallDeclarationText
+      - whatsappFlag
+      - whatsappDeclarationText
+      - callbackAPI
+  Consent_ResponseBody:
+    type: object
+    properties:
+      jtid:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey
+      stageName:
+        type: string
+        description: Stage Name of the Journey
+      OfferStatus:
+        type: string
+        description: 1. Yes if customer has preapproved offer for credit card 2. No if customer don’t have pre approved offer for credit card
+      customerType:
+        type: string
+      responseCode:
+        type: string
+        description: 1. "0000" for success 2. Appropriate incremental error code for backend check failures or due to backend API call failure
+      responseMessage:
+        type: string
+        description: 1. Success for "0000" 2. Appropriate functional validation failure message or backend API error message
+      journeyStatus:
+        type: string
+        description: 1. Active if backend checks are passed 2. Failed if backend checks are failed
+    example: '{"jtid":"<Channel Code>_ybpp_20240228_1000302","prn":"<Channel Code>_20240228164220_00001","stageName":"consent","OfferStatus":"no","customerType":"NTB","responseCode":"0000","responseMessage":"Success","journeyStatus":"Active"}'
+    required:
+      - jtid
+      - prn
+      - stageName
+      - OfferStatus
+      - customerType
+      - responseCode
+      - responseMessage
+      - journeyStatus
+  FetchCustomerData_RequestBody:
+    type: object
+    properties:
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey. Format should be as below <Channel name>- DDMMYYYYHHMMSS-<5 digit unique no>
+      jtId:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call. Should be the value given in dedupe API response
+      productCode:
+        type: string
+        description: Product name as per master list. Pass “cc” as default value
+      stageName:
+        type: string
+        description: 'Master Stage values to be passed . Pass “fetchCustomerData” as default value '
+    example: '{"prn":"<Channel code>_20240228164220_00001","jtId":"< Channel code>_ybpp_20240228_1000302","productCode":"cc","stageName":"fetchCustomerData"}'
+    required:
+      - prn
+      - jtId
+      - stageName
+      - productCode
+  FetchCustomerData_ResponseBody:
+    type: object
+    properties:
+      jtId:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey
+      stageName:
+        type: string
+        description: Stage Name of the Journey
+      responseCode:
+        type: string
+        description: 1. "0000" for success 2. Appropriate incremental error code for backend check failures or due to backend API call failure
+      responseMessage:
+        type: string
+        description: 1. Success for "0000" 2. Appropriate functional validation failure message or backend API error message
+      journeyStatus:
+        type: string
+        description: 1. Active if backend checks are passed 2. Failed if backend checks are failed
+      dob:
+        type: string
+        description: Date of Birth of the customer
+      gender:
+        type: string
+        description: Gender of the customer
+      firstName:
+        type: string
+        description: First name of the customer
+      middleName:
+        type: string
+        description: Middle name of the customer
+      lastName:
+        type: string
+        description: Last name of the customer
+      fullName:
+        type: string
+        description: Full name of the customer
+      addressDetails:
+        type: object
+        properties:
+          residence:
+            type: object
+            description: Residence address details
+            properties:
+              type:
+                type: string
+                description: residence
+              line1:
+                type: string
+                description: Line 1 of the address
+              line2:
+                type: string
+                description: Line 2 of the address
+              line3:
+                type: string
+                description: Line 3 of the address
+              city:
+                type: string
+                description: City of residence
+              state:
+                type: string
+                description: State of residence
+              country:
+                type: string
+                description: Country of residence
+              pincode:
+                type: string
+                description: Pincode of residence
+          permanent:
+            type: object
+            description: Permanent address details
+            properties:
+              type:
+                type: string
+                description: permanent
+              line1:
+                type: string
+                description: Line 1 of the address
+              line2:
+                type: string
+                description: Line 2 of the address
+              line3:
+                type: string
+                description: Line 3 of the address
+              city:
+                type: string
+                description: City of permanent
+              state:
+                type: string
+                description: State of permanent
+              country:
+                type: string
+                description: Country of permanent
+              pincode:
+                type: string
+                description: Pincode of permanent
+          office:
+            type: object
+            description: Office address details
+            properties:
+              type:
+                type: string
+                description: office
+              line1:
+                type: string
+                description: Line 1 of the address
+              line2:
+                type: string
+                description: Line 2 of the address
+              line3:
+                type: string
+                description: Line 3 of the address
+              city:
+                type: string
+                description: City of office
+              state:
+                type: string
+                description: State of office
+              country:
+                type: string
+                description: Country of office
+              pincode:
+                type: string
+                description: Pincode of office
+          communication:
+            type: object
+            description: Communication address details
+            properties:
+              type:
+                type: string
+                description: communication
+              line1:
+                type: string
+                description: Line 1 of the address
+              line2:
+                type: string
+                description: Line 2 of the address
+              line3:
+                type: string
+                description: Line 3 of the address
+              city:
+                type: string
+                description: City of communication
+              state:
+                type: string
+                description: State of communication
+              country:
+                type: string
+                description: Country of communication
+              pincode:
+                type: string
+                description: Pincode of communication
+        description: Object containing various address details
+    example: '{"jtId":"<Channel code>_ybpp_20240228_1000302","prn":"<Channel code>_20240228164220_00001","stageName":"fetchCustomerData","responseCode":"0000","responseMessage":"Success","journeyStatus":"Active","dob":"1990-01-15","gender":"Male","firstName":"John","middleName":"Doe","lastName":"Smith","fullName":"John Doe Smith","addressDetails":{"residence":{"type":"residence","line1":"123 Main Street","line2":"Apt 456","line3":"Area XYZ","city":"City ABC","state":"State DEF","country":"India","pincode":"123456"},"permanent":{"type":"permanent","line1":"456 Oak Street","line2":"Suite 789","line3":"Area PQR","city":"City XYZ","state":"State LMN","country":"India","pincode":"789012"},"office":{"type":"office","line1":"789 Pine Street","line2":"Floor 101","line3":"Area UVW","city":"City MNO","state":"State XYZ","country":"India","pincode":"345678"},"communication":{"type":"communication","line1":"789 Pine Street","line2":"Floor 101","line3":"Area UVW","city":"City MNO","state":"State XYZ","country":"India","pincode":"345678"}}}'
+  CAF1_RequestBody:
+    type: object
+    properties:
+      jtid:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call. Should be the value given in dedupe API response.
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey. Format should be as below <Channel name>- DDMMYYYYHHMMSS-<5 digit unique no>.
+      productCode:
+        type: string
+        description: Product name as per master list. Pass “cc” as default value .
+      stageName:
+        type: string
+        description: Master Stage values to be passed.  Pass “caf1” as default value .
+      branchCode:
+        type: string
+        description: Branch code associated with the customer pincode
+      gender:
+        type: string
+        description: Gender
+      addressDetails:
+        type: object
+        properties:
+          residence:
+            type: string
+            description: Residence address details
+            properties:
+              line1:
+                type: string
+                description: Line 1 of the address. No special characters(Space, Hyphen, backslash, comma allowed) 35 Characters
+              line2:
+                type: string
+                description: Line 2 of the address. No special characters(Space, Hyphen, backslash, comma allowed) 35 Characters
+              line3:
+                type: string
+                description: Line 3 of the address. No special characters(Space, Hyphen, backslash, comma allowed) 35 Characters
+              city:
+                type: string
+                description: City of residence
+              state:
+                type: string
+                description: State of residence
+              country:
+                type: string
+                description: Country of residence
+              pincode:
+                type: string
+                description: Pincode of residence
+        description: Object containing various address details.Dropdown to be provided Only Master values accepted.
+      occupation:
+        type: object
+        description: Object containing occupation details
+        properties:
+          occupationType:
+            type: string
+            description: Type of occupation
+          companyNameDesiredOnCard:
+            type: string
+            description: Company name desired on the card (if Occupation Type is Self Employed or Professional)
+          nameOfCompany:
+            type: string
+            description: Name of the business for Non Salaried customers. Name of Company for Salaried customers.
+          callbackAPI:
+            type: string
+            description: Callback API URL to post offer status post completion
+    example: '{"jtid":"<Channel code>_ybpp_20240228_1000302","prn":"<Channel code>_20240228164220_00001","productCode":"cc","stageName":"caf1","branchCode":"1234","gender":"Male","addressDetails":{"residence":{"line1":"123 Main Street","line2":"Apt 456","line3":"Area XYZ","city":"city ABC","state":"state DEF","country":"India","pincode":""}},"occupation":{"occupationType":"Salaried","companyNameDesiredOnCard":"asdfsf","nameOfCompany":" A2Z INFRA ENGINEERING LTD ","callbackAPI":"https://api.partner.com/yesbank/callback"}}'
+    required:
+      - jtid
+      - prn
+      - stageName
+      - gender
+      - productCode
+      - branchCode
+      - addressDetails
+  CAF1_ResponseBody:
+    type: object
+    properties:
+      jtId:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey
+      stageName:
+        type: string
+        description: Stage Name of the Journey
+      responseCode:
+        type: string
+        description: 1. "0000" for success 2. Appropriate incremental error code for backend check failures or due to backend API call failure
+      responseMessage:
+        type: string
+        description: 1. Success for "0000" 2. Appropriate functional validation failure message or backend API error message
+      journeyStatus:
+        type: string
+        description: 1. Active if backend checks are passed 2. Failed if backend checks are failed
+      nameOnCard:
+        type: array
+        items:
+          type: string
+        description: 'Customer name : field with array of strings'
+      offerStatus:
+        type: boolean
+        description: 1. Yes if customer has eligible offer for credit card 2. No if customer don’t have eligible offer for credit card
+      offerDetails:
+        type: object
+        properties:
+          eligibleCardName:
+            type: string
+          colorCode:
+            type: string
+        description: Object containing details of the offer
+    example: '{"jtId":"<Channel code>_ybpp_20240228_1000302","prn":"<Channel code>_20240228164220_00001","stageName":"caf1","responseCode":"0000","responseMessage":"Success","journeyStatus":"Active","nameOnCard":["Yogesh Aghav","Yogesh Aghav","Yogesh","Yogesh A"],"offerStatus":true,"offerDetails":{"eligibleCardName":"YES FIRST BUSINESS","colorCode":"GREEN"}}'
+  CAF2_RequestBody:
+    type: object
+    properties:
+      jtId:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call. Should be the value given in dedupe API response,
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey. Format should be as below <Channel name>- DDMMYYYYHHMMSS- <5 digit unique no>.
+      productCode:
+        type: string
+        description: Product name as per master list .Pass “cc” as default value.
+      stageName:
+        type: string
+        description: Stage to be passed here for this API hit.  Pass “caf2” as default value.
+      nameOnCard:
+        type: string
+        description: Customer name to be displayed on credit card
+      maritalStatus:
+        type: string
+        description: Marital status of the Customer
+      emailID:
+        type: string
+        description: Email address of the Customer. Email Regular Expression to be followed.
+      fatherName:
+        type: string
+        description: Father's name of the Customer( only first name ).  Max 20 characters.
+      relationshipWithSeniorOfficer:
+        type: string
+        description: Relationship with a senior officer
+      NameoftheBankExecutive:
+        type: string
+        description: Name of the Bank Executive. Only if relationship with director flag is selected as Yes.
+      RelationshipWithBankExecutive:
+        type: string
+        description: Relationship with the Bank Executive. Only if relationship with director flag is selected as Yes Dropdown of relationships Only Master values accepted.
+      typeOfCompany:
+        type: string
+        description: Type of company for employment
+      designation:
+        type: string
+        description: Designation of the Customer
+      profession:
+        type: string
+        description: Profession of the Customer
+      nameOfCompany:
+        type: string
+        description: Name of the business for Non Salaried customers Name of Company for Salaried customers
+      annualIncome:
+        type: number
+        description: Annual Income of the customer
+      addressDetails:
+        type: object
+        properties:
+          office:
+            type: object
+            description: office address details
+            properties:
+              line1:
+                type: string
+                description: Line 1 of the address. No special characters (Space, Hyphen, backslash, comma allowed) 35 Characters
+              line2:
+                type: string
+                description: Line 2 of the address. No special characters (Space, Hyphen, backslash, comma allowed) 35 Characters
+              line3:
+                type: string
+                description: Line 3 of the address. No special characters (Space, Hyphen, backslash, comma allowed) 35 Characters
+              city:
+                type: string
+                description: City of office( Incase the City of office is not in the Pincodemaster , then the partner will be prompted to enter manually )
+              state:
+                type: string
+                description: State of office( Incase the State of office is not in the Pincodemaster, then the partner will be prompted to enter manually )
+              country:
+                type: string
+                description: Country of office
+              pincode:
+                type: string
+                description: Pincode of office
+        description: Object containing various address details
+      CommunicationAddress:
+        type: string
+        description: Communication address of customer where card should get delivered
+    example: '{"jtId":"<Channel code>_ybpp_20240228_1000302","prn":"<Channel code>_20240228164220_00001","productCode":"cc","stageName":"caf2","nameOnCard":"John Doe","maritalStatus":"Single","emailID":"customer@example.com","fatherName":"YourFatherName","relationshipWithSeniorOfficer":"Yes"," NameoftheBankExecutive":"Name of the Executive"," RelationshipWithBankExecutive":"Relationship with Executive","typeOfCompany":"Proprietorship firm","designation":"YourDesignation","profession":"Other (Please Specify)","nameOfCompany":" A2Z INFRA ENGINEERING LTD ","annualIncome":100000,"addressDetails":{"office":{"line1":"789 Pine Street","line2":"Floor 101","line3":"Area UVW","city":"city MNO","state":"state XYZ","country":"IB","pincode":"345678"}},"CommunicationAddress":"Residence"}'
+    required:
+      - jtId
+      - prn
+      - productCode
+      - stageName
+      - nameOnCard
+      - maritalStatus
+      - emailID
+      - fatherName
+      - relationshipWithSeniorOfficer
+      - NameoftheBankExecutive
+      - RelationshipWithBankExecutive
+      - typeOfCompany
+      - designation
+      - profession
+      - nameOfCompany
+      - annualIncome
+      - addressDetails
+      - CommunicationAddress
+  CAF2_ResponseBody:
+    type: object
+    properties:
+      jtId:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey
+      stageName:
+        type: string
+        description: Stage Name of the Journey
+      responseCode:
+        type: string
+        description: 1. "0000" for success 2. Appropriate incremental error code for backend check failures or due to backend API call failure
+      responseMessage:
+        type: string
+        description: 1. Success for "0000" 2. Appropriate functional validation failure message or backend API error message
+      journeyStatus:
+        type: string
+        description: 1. Active if backend checks are passed 2. Failed if backend checks are failed
+      offerStatus:
+        type: boolean
+        description: 1. Yes if customer has eligible offer for credit card 2. No if customer don’t have eligible offer for credit card
+      offerDetails:
+        type: object
+        properties:
+          eligibleCardName:
+            type: string
+          colorCode:
+            type: string
+        description: Object containing details of the offer
+    example: '{"jtId":"<Channel code>_ybpp_20240228_1000302","prn":"<Channel code>_20240228164220_00001","stageName":"caf2","responseCode":"0000","responseMessage":"Success","journeyStatus":"Active","offerStatus":true,"offerDetails":{"eligibleCardName":"YES FIRST BUSINESS","colorCode":"GREEN"}}'
+  SubmitOffer_RequestBody:
+    type: object
+    properties:
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey. Format should be as below <Channel name>- DDMMYYYYHHMMSS-<5 digit unique no>
+      jtId:
+        type: string
+        description: 'Unique Bank Reference Number Provided in the response of dedupe API Call. Should be the value given in dedupe API response '
+      productCode:
+        type: string
+        description: 'Product name as per master list. Pass “cc” as default value. '
+      stageName:
+        type: string
+        description: Stage to be passed here for this API hit. Pass “submitOffer” as default value
+      offerAccepted:
+        type: string
+        description: Offer acceptance status
+      selectedCardName:
+        type: string
+        description: Eligible card name of the BRE offer that is selected by customer
+    example: '{"prn":"<Channel code>_20240228164220_00001","jtId":"<Channel code>_ybpp_20240228_1000302","productCode":"cc","stageName":"submitOffer","offerAccepted":"Yes","selectedCardName":"YES FIRST BUSINESS"}'
+    required:
+      - selectedCardName
+      - offerAccepted
+      - stageName
+      - productCode
+      - jtId
+      - prn
+  SubmitOffer_ResponseBody:
+    type: object
+    properties:
+      jtId:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey
+      stageName:
+        type: string
+        description: Stage Name of the Journey
+      responseCode:
+        type: string
+        description: 1. "0000" for success 2. Appropriate incremental error code for backend check failures or due to backend API call failure
+      responseMessage:
+        type: string
+        description: 1. Success for "0000" 2. Appropriate functional validation failure message or backend API error message
+      journeyStatus:
+        type: string
+        description: 1. Active if backend checks are passed 2. Failed if backend checks are failed
+      eKYCRequired:
+        type: string
+        description: This flag will define whether partner should navigate customer to EKYC stage or not.
+      onboardingStatus:
+        type: string
+        description: In case EKYC and VKYC are waived and onboarding is initiated else it will be pending
+      vKYCRequired:
+        type: boolean
+    example: '{"jtId":"<Channel code>_ybpp_20240228_1000302","prn":"<Channel code>_20240228164220_00001","stageName":"submitOffer","responseCode":"0000","responseMessage":"Success","journeyStatus":"Active","eKYCRequired":"Required","onboardingStatus":"Pending","vKYCRequired":true}'
+  EKYC_RequestBody:
+    type: object
+    properties:
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey. Format should be as below <Channel name>- DDMMYYYYHHMMSS-<5 digit unique no>
+      jtId:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call. Should be the value given in dedupe API response
+      productCode:
+        type: string
+        description: 'Product name as per master list. Pass “cc” as default value '
+      stageName:
+        type: string
+        description: Stage to be passed here for this API hit. Pass “submitOffer” as default value
+      redirectionUrl:
+        type: string
+        description: URL to redirect customer after eKYC completion
+      callbackAPI:
+        type: string
+        description: Callback API URL to post EKYC stage update to partner post customer action
+    example: '{"prn":"<Channel code>_20240228164220_00001","jtId":"<Channel code>_ybpp_20240228_1000302","productCode":"cc","stageName":"ekyc","redirectionUrl":"https://partner.com","callbackAPI":"https://api.partner.com/yesbank/callback"}'
+    required:
+      - prn
+      - jtId
+      - stageName
+      - callbackAPI
+      - productCode
+      - redirectionUrl
+  EKYC_ResponseBody:
+    type: object
+    properties:
+      jtId:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey
+      stageName:
+        type: string
+        description: Stage Name of the Journey
+      responseCode:
+        type: string
+        description: 1. "0000" for success 2. Appropriate incremental error code for backend check failures or due to backend API call failure
+      responseMessage:
+        type: string
+        description: 1. Success for "0000" 2. Appropriate functional validation failure message or backend API error message
+      journeyStatus:
+        type: string
+        description: 1. Active if backend checks are passed 2. Failed if backend checks are failed
+      url:
+        type: string
+        description: URL for eKYC completion
+      vKYCRequired:
+        type: boolean
+        description: This flag will define whether partner should navigate customer to VKYC stage or not.
+      onboardingStatus:
+        type: string
+        description: In case EKYC and VKYC are waived and onboarding is initiated else it will be pending
+    example: '{"jtId":"<Channel code>_ybpp_20240228_1000302","prn":"<Channel code>_20240228164220_00001","stageName":"ekyc","responseCode":"0000","responseMessage":"Success","journeyStatus":"Active","url":"https://partner.com","vKYCRequired":true,"onboardingStatus":"Initiated"}'
+  VKYC_RequestBody:
+    type: object
+    properties:
+      jtId:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call. Should be the value given in dedupe API response
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey. Format should be as below <Channel name>- DDMMYYYYHHMMSS-<5 digit unique no>
+      productCode:
+        type: string
+        description: 'Product name as per master list. Pass “cc” as default value '
+      stageName:
+        type: string
+        description: Stage to be passed here for this API hit. Pass “submitOffer” as default value
+      redirectionUrl:
+        type: string
+        description: URL to redirect customer after VKYC completion
+      callbackAPI:
+        type: string
+        description: Callback API URL to post VKYC stage update to partner post customer action
+    example: '{"jtId":"<Channel Code>_ybpp_20240228_1000302","prn":"<Channel Code>_20240228164220_00001","productCode":"cc","stageName":"vkyc","redirectionUrl":"https://partner.com","callbackAPI":"https://api.partner.com/yesbank/callback"}'
+    required:
+      - jtId
+      - prn
+      - stageName
+      - productCode
+      - redirectionUrl
+      - callbackAPI
+  VKYC_ResponseBody:
+    type: object
+    properties:
+      jtId:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call
+      prn:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey
+      stageName:
+        type: string
+        description: Stage Name of the Journey
+      responseCode:
+        type: string
+        description: 1. "0000" for success 2. Appropriate incremental error code for backend check failures or due to backend API call failure
+      responseMessage:
+        type: string
+        description: 1. Success for "0000" 2. Appropriate functional validation failure message or backend API error message
+      journeyStatus:
+        type: string
+        description: 1. Active if backend checks are passed 2. Failed if backend checks are failed
+      vkycProcessStatus:
+        type: string
+        description: vkycProcessStatus
+      url:
+        type: string
+        description: URL for VKYC call with YBL agent
+      onboardingStatus:
+        type: string
+        description: In case EKYC and VKYC are waived and onboarding is initiated else it will be pending
+    example: '{"jtId":"<Partnername>_ybpp_20240228_1000302","prn":"<Partnername>_20240228164220_00001","stageName":"vkyc","responseCode":"0000","responseMessage":"Success","journeyStatus":"Active","vkycProcessStatus":"LinkGenerated","url":"https://pp.yesbank.in/pp/vkyc","onboardingStatus":"initiated"}'
+  Status_RequestBody:
+    type: object
+    properties:
+      prn:
+        type: string
+        description: Unique Bank Reference Number Provided in the response of dedupe API Call. Should be the value given in dedupe API response
+      jtid:
+        type: string
+        description: Unique Partner Reference Number passed in Dedupe API request to track customer onboarding journey. Format should be as below <Channel name>- DDMMYYYYHHMMSS-<5 digit unique no>
+      productCode:
+        type: string
+        description: 'Product name as per master list. Pass “cc” as default value '
+      stageName:
+        type: string
+        description: Stage to be passed here for this API hit. Pass “submitOffer” as default value
+    example: '{"prn":"<Channel code>_20240228164220_00001","jtid":"<Channel Code>_ybpp_20240228_1000302","productCode":"cc","stageName":"status"}'
+    required:
+      - prn
+      - jtid
+      - stageName
+      - productCode
+  Status_ResponseBody:
+    type: object
+    properties:
+      journeyStatus:
+        type: string
+        description: 1. Active if backend checks are passed 2. Failed if backend checks are failed 3. Completed if onboarding is completed
+      stageDetails:
+        type: object
+        properties:
+          dedupe:
+            type: object
+            description: Object containing details of "dedupe" stage
+            properties:
+              responseCode:
+                type: string
+                description: Response code for the "dedupe" stage
+              responseMessage:
+                type: string
+                description: Response message for the "dedupe" stage
+          consent:
+            type: object
+            description: Object containing details of "consent" stage
+            properties:
+              responseCode:
+                type: string
+                description: Response code for the "consent" stage
+              responseMessage:
+                type: string
+                description: Response message for the "consent" stage
+          fetchCustomerData:
+            type: object
+            description: Object containing details of "fetchCustomerData" stage
+            properties:
+              responseCode:
+                type: string
+                description: Response code for the "fetchCustomerData" stage
+              responseMessage:
+                type: string
+                description: Response message for the "fetchCustomerData" stage
+          caf1:
+            type: object
+            description: Object containing details of "caf1" stage
+            properties:
+              responseCode:
+                type: string
+                description: Response code for the "caf1" stage
+              responseMessage:
+                type: string
+                description: Response message for the "caf1" stage
+          offerDetails:
+            type: object
+            description: Object containing details of Eligible Offer if any
+            properties:
+              eligibleCardName:
+                type: string
+                description: Eligible card name of the BRE offer
+              colorCode:
+                type: string
+                description: Color code associated with the Eligible card
+          caf2:
+            type: object
+            description: Object containing details of "caf2" stage
+            properties:
+              responseCode:
+                type: string
+                description: Response code for the "caf2" stage
+              responseMessage:
+                type: string
+                description: Response message for the "caf2" stage
+          submitOffer:
+            type: object
+            description: Object containing details of "submitOffer" stage
+            properties:
+              responseCode:
+                type: string
+                description: Response code for the "submitOffer" stage
+              responseMessage:
+                type: string
+                description: Response message for the "submitOffer" stage
+          ekyc:
+            type: object
+            description: Object containing details of "ekyc" stage
+            properties:
+              responseCode:
+                type: string
+                description: Response code for the " ekyc " stage
+              responseMessage:
+                type: string
+                description: Response message for the " ekyc " stage
+              ekycProcessStatus:
+                type: string
+                description: EKYC Process status as per customer actions
+          vkyc:
+            type: object
+            description: Object containing details of "vkyc" stage
+            properties:
+              responseCode:
+                type: string
+                description: Response code for the "vkyc" stage
+              responseMessage:
+                type: string
+                description: Response message for the "vkyc" stage
+              vkycProcessStatus:
+                type: string
+                description: VKYC Process status as per customer actions
+          onboarding:
+            type: object
+            description: Object containing details of "onboarding" stage
+            properties:
+              responseCode:
+                type: string
+                description: Response code for the “onboarding” stage
+              responseMessage:
+                type: string
+                description: Response message for the “onboarding” stage
+              onboardingProcessStatus:
+                type: string
+                description: Onboarding Process status as per backend checks
+              applicationFormNumber:
+                type: string
+                description: Reference Number for onboarding
+              baasAppFormNum:
+                type: string
+                description: BaasAppForm Number for onboarding
+        description: Object containing details of each stage in the journey
+    example: '{"journeyStatus":"Active","stageDetails":{"dedupe":{"responseCode":"0000","responseMessage":"Success"},"consent":{"responseCode":"0000","responseMessage":"Success"},"fetchCustomerData":{"responseCode":"0000","responseMessage":"Success"},"caf1":{"responseCode":"0000","responseMessage":"Success"},"offerDetails":{"eligibleCardName":"YES FIRST BUSINESS","colorCode":"GREEN"},"caf2":{"responseCode":"0000","responseMessage":"Success"},"submitOffer":{"responseCode":"0000","responseMessage":"Success"},"ekyc":{"responseCode":"0000","responseMessage":"Success","ekycProcessStatus":"Completed"},"vkyc":{"responseCode":"0000","responseMessage":"Success","vkycProcessStatus":"Completed"},"onboarding":{"responseCode":"0000","responseMessage":"Success","onboardingProcessStatus":"Completed","applicationFormNumber":"2503171242461","baasAppFormNum":"CIO101519"}}}'
+host: uatyblsandbox.yesbank.in
