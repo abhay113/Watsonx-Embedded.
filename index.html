@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + React + TS</title>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="module" src="/src/main.tsx"></script>
+
+  <script>
+    window.watsonAssistantChatOptions = {
+      integrationID: "8eb28b16-ab8c-4b04-ad3c-7fbba1757731", // The ID of this integration.
+      region: "aws-us-east-1", // The region your integration is hosted in.
+      serviceInstanceID: "20250723-1238-4897-20e5-f97d36122735", // The ID of your service instance.
+      orchestrateUIAgentExtensions: false, // If you wish to enable optional UI Agent extensions.
+      onLoad: async (instance) => { await instance.render(); }
+    };
+    setTimeout(function () {
+      const t = document.createElement('script');
+      t.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+      document.head.appendChild(t);
+    });
+  </script>
+</body>
+
+</html>
