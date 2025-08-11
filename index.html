@@ -13,20 +13,27 @@
 
   <script type="module" src="/src/main.tsx"></script>
   <!-- this is Rohits  -->
-  <script>
+  <!-- <script>
     window.watsonAssistantChatOptions = {
       integrationID: "26bc2f55-aa69-43e9-b439-548fe19dfc92", // The ID of this integration.
       region: "aws-ap-south-1", // The region your integration is hosted in.
       serviceInstanceID: "20250721-0711-3112-3088-ecc5ff410f4e", // The ID of your service instance.
       orchestrateUIAgentExtensions: false, // If you wish to enable optional UI Agent extensions.
-      onLoad: async (instance) => { await instance.render(); }
+      onLoad: async (instance) => {
+        setTimeout(async () => {
+          // This is a "soft" reset. It clears the conversation but keeps the session.
+          // It's much safer than destroySession() during initial load.
+          await instance.restartConversation();
+        });
+        await instance.render();
+      }
     };
     setTimeout(function () {
       const t = document.createElement('script');
       t.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
       document.head.appendChild(t);
     });
-  </script>
+  </script> -->
   <!-- This is the Abhay -->
 
   <!-- <script>
@@ -43,6 +50,31 @@
       document.head.appendChild(t);
     });
   </script> -->
+
+
+
+  <!-- This is Rohit Jha's Assistant -->
+  <script>
+    window.watsonAssistantChatOptions = {
+      integrationID: "34a4fbbb-0559-489a-87f5-eaf08fb78e36", // The ID of this integration.
+      region: "aws-us-east-1", // The region your integration is hosted in.
+      serviceInstanceID: "20250811-0626-5559-00c2-ca0f3f80a6cd", // The ID of your service instance.
+      orchestrateUIAgentExtensions: false, // If you wish to enable optional UI Agent extensions.
+      onLoad: async (instance) => {
+        setTimeout(async () => {
+          // This is a "soft" reset. It clears the conversation but keeps the session.
+          await instance.restartConversation();
+        });
+
+        await instance.render();
+      }
+    };
+    setTimeout(function () {
+      const t = document.createElement('script');
+      t.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+      document.head.appendChild(t);
+    });
+  </script>
 </body>
 
 </html>
